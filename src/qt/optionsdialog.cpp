@@ -154,11 +154,6 @@ void OptionsDialog::setModel(OptionsModel *_model)
         if (_model->isRestartRequired())
             showRestartWarning(true);
 
-        QString strLabel = _model->getOverriddenByCommandLine();
-        if (strLabel.isEmpty())
-            strLabel = tr("none");
-        ui->overriddenByCommandLineLabel->setText(strLabel);
-
         mapper->setModel(_model);
         setMapper();
         mapper->toFirst();

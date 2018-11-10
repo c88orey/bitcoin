@@ -66,59 +66,40 @@ platform.
 Notable changes
 ===============
 
-Mining
-------
+RPC changes
+------------
 
-- Calls to `getblocktemplate` will fail if the segwit rule is not specified.
-  Calling `getblocktemplate` without segwit specified is almost certainly
-  a misconfiguration since doing so results in lower rewards for the miner.
-  Failed calls will produce an error message describing how to enable the
-  segwit rule.
+### Low-level changes
 
-Configuration option changes
-----------------------------
+- The `createrawtransaction` RPC will now accept an array or dictionary (kept for compatibility) for the `outputs` parameter. This means the order of transaction outputs can be specified by the client.
+- The `fundrawtransaction` RPC will reject the previously deprecated `reserveChangeKey` option.
+- Wallet `getnewaddress` and `addmultisigaddress` RPC `account` named
+  parameters have been renamed to `label` with no change in behavior.
+- Wallet `getlabeladdress`, `getreceivedbylabel`, `listreceivedbylabel`, and
+  `setlabel` RPCs have been added to replace `getaccountaddress`,
+  `getreceivedbyaccount`, `listreceivedbyaccount`, and `setaccount` RPCs,
+  which are now deprecated. There is no change in behavior between the
+  new RPCs and deprecated RPCs.
+- Wallet `listreceivedbylabel`, `listreceivedbyaccount` and `listunspent` RPCs
+  add `label` fields to returned JSON objects that previously only had
+  `account` fields.
+- `sendmany` now shuffles outputs to improve privacy, so any previously expected behavior with regards to output ordering can no longer be relied upon.
 
-- A warning is printed if an unrecognized section name is used in the
-  configuration file.  Recognized sections are `[test]`, `[main]`, and
-  `[regtest]`.
+External wallet files
+---------------------
 
-- Four new options are available for configuring the maximum number of
-  messages that ZMQ will queue in memory (the "high water mark") before
-  dropping additional messages.  The default value is 1,000, the same as
-  was used for previous releases.  See the [ZMQ
-  documentation](https://github.com/bitcoin/bitcoin/blob/master/doc/zmq.md#usage)
-  for details.
+The `-wallet=<path>` option now accepts full paths instead of requiring wallets
+to be located in the -walletdir directory.
 
-- The `enablebip61` option (introduced in Bitcoin Core 0.17.0) is
-  used to toggle sending of BIP 61 reject messages. Reject messages have no use
-  case on the P2P network and are only logged for debugging by most network
-  nodes. The option will now by default be off for improved privacy and security
-  as well as reduced upload usage. The option can explicitly be turned on for
-  local-network debugging purposes.
+Newly created wallet format
+---------------------------
 
-- The `rpcallowip` option can no longer be used to automatically listen
-  on all network interfaces.  Instead, the `rpcbind` parameter must also
-  be used to specify the IP addresses to listen on.  Listening for RPC
-  commands over a public network connection is insecure and should be
-  disabled, so a warning is now printed if a user selects such a
-  configuration.  If you need to expose RPC in order to use a tool
-  like Docker, ensure you only bind RPC to your localhost, e.g. `docker
-  run [...] -p 127.0.0.1:8332:8332` (this is an extra `:8332` over the
-  normal Docker port specification).
-
-- The `rpcpassword` option now causes a startup error if the password
-  set in the configuration file contains a hash character (#), as it's
-  ambiguous whether the hash character is meant for the password or as a
-  comment.
-
-- The `whitelistforcerelay` option is used to relay transactions from
-  whitelisted peers even when not accepted to the mempool. This option now
-  defaults to being off, so that changes in policy and disconnect/ban behavior
-  will not cause a node that is whitelisting another to be dropped by peers.
-  Users can still explicitly enable this behavior with the command line option
-  (and may want to consider [contacting](https://bitcoincore.org/en/contact/)
-  the Bitcoin Core project to let us know about their
-  use-case, as this feature could be deprecated in the future).
+The `-enablebip61` command line option (introduced in Bitcoin Core 0.17.0) is
+used to toggle sending of BIP 61 reject messages. Reject messages have no use
+case on the P2P network and are only logged for debugging by most network
+nodes. The option will now by default be off for improved privacy and security
+as well as reduced upload usage. The option can explicitly be turned on for
+local-network debugging purposes.
 
 Documentation
 -------------
