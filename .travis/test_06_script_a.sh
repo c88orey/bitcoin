@@ -23,7 +23,8 @@ else
 fi
 END_FOLD
 
-mkdir build
+# build directory may already exist in Travis cache
+mkdir -p build
 cd build || (echo "could not enter build directory"; exit 1)
 
 BEGIN_FOLD configure

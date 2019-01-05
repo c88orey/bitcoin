@@ -22,4 +22,10 @@ fi
 if [ -z "$NO_DEPENDS" ]; then
   DOCKER_EXEC CONFIG_SHELL= make $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS
 fi
-
+if [ "$COMPILE_PREVIOUS_VERSIONS" = "true" ]; then
+  BEGIN_FOLD previous-versions
+  DOCKER_EXEC mkdir -p build/releases
+  DOCKER_EXEC ln -fs ../../../build/releases build/releases
+  DOCKER_EXEC contrib/devtools/previous_release.sh -f -b v0.17.1 v0.18.0
+  END_FOLD
+fi

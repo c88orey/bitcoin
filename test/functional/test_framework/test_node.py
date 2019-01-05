@@ -58,7 +58,7 @@ class TestNode():
     To make things easier for the test writer, any unrecognised messages will
     be dispatched to the RPC connection."""
 
-    def __init__(self, i, datadir, *, rpchost, timewait, bitcoind, bitcoin_cli, coverage_dir, cwd, extra_conf=None, extra_args=None, use_cli=False, start_perf=False):
+    def __init__(self, i, datadir, *, rpchost, timewait, bitcoind, bitcoin_cli, coverage_dir, cwd, extra_conf=None, extra_args=None, use_cli=False, start_perf=False, version=None):
         """
         Kwargs:
             start_perf (bool): If True, begin profiling the node with `perf` as soon as
@@ -93,6 +93,7 @@ class TestNode():
         self.cli = TestNodeCLI(bitcoin_cli, self.datadir)
         self.use_cli = use_cli
         self.start_perf = start_perf
+        self.version = version
 
         self.running = False
         self.process = None
@@ -251,7 +252,11 @@ class TestNode():
             return
         self.log.debug("Stopping node")
         try:
-            self.stop(wait=wait)
+            # Do not use wait argument when testing older nodes, e.g. in feature_backwards_compatibility.py
+            if self.version is None or self.version >= 180000:
+                self.stop(wait=wait)
+            else:
+                self.stop()
         except http.client.CannotSendRequest:
             self.log.exception("Unable to stop node.")
 
