@@ -22,6 +22,7 @@ Common `host-platform-triplets` for cross compilation are:
 
 - `x86_64-w64-mingw32` for Win64
 - `x86_64-apple-darwin14` for macOS
+- `aarch64-apple-darwin14` for iOS
 - `arm-linux-gnueabihf` for Linux ARM 32 bit
 - `aarch64-linux-gnu` for Linux ARM 64 bit
 - `riscv32-linux-gnu` for Linux RISC-V 32 bit
@@ -59,6 +60,21 @@ For linux RISC-V 64-bit cross compilation (there are no packages for 32-bit):
 
 RISC-V known issue: gcc-7.3.0 and gcc-7.3.1 result in a broken `test_bitcoin` executable (see https://github.com/bitcoin/bitcoin/pull/13543),
 this is apparently fixed in gcc-8.1.0.
+
+#### For iOS cross compilation
+
+This produces a library which can be used in an iOS application. It is not well tested and does not provide a GUI.
+
+For iOS cross compilation you need to obtain the iOS SDK. It's easiest to add a symlink:
+
+    ln -s /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs SDKs
+
+    make HOST=aarch64-apple-darwin14 NO_WALLET=1 NO_QT=1 NO_UPNP=1
+
+There is currently no wallet support, because BDB compilation fails. There is also
+no GUI support (QT).
+
+See also: https://github.com/bitcoin/bitcoin/issues/11720
 
 ### Dependency Options
 The following can be set when running make: make FOO=bar
