@@ -125,7 +125,13 @@ pushd "$PWD/build/releases" || exit 1
     else
       if [ ! -d "$tag" ]; then
         mkdir "$tag"
-        curl -O "https://bitcoin.org/bin/bitcoin-core-${tag:1}/bitcoin-${tag:1}-$PLATFORM.tar.gz"
+        if [[ "$tag" =~ v(.*)(rc[0-9]+)$ ]]; then
+            BIN_PATH="bin/bitcoin-core-${BASH_REMATCH[1]}/test.${BASH_REMATCH[2]}"
+        else
+            BIN_PATH="bin/bitcoin-core-${tag:1}"
+        fi
+        URL="https://bitcoin.org/$BIN_PATH/bitcoin-${tag:1}-$PLATFORM.tar.gz"
+        curl -O $URL
         tar -zxf "bitcoin-${tag:1}-$PLATFORM.tar.gz" -C "$tag" --strip-components=1 "bitcoin-${tag:1}"
         rm "bitcoin-${tag:1}-$PLATFORM.tar.gz"
       fi
