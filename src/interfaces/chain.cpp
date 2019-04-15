@@ -10,6 +10,7 @@
 #include <interfaces/wallet.h>
 #include <net.h>
 #include <node/coin.h>
+#include <node/transaction.h>
 #include <policy/fees.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
@@ -376,6 +377,9 @@ public:
         for (const CTxMemPoolEntry& entry : ::mempool.mapTx) {
             notifications.TransactionAddedToMempool(entry.GetSharedTx());
         }
+    }
+    TransactionError broadcastTransaction(const CTransactionRef tx, uint256& hashTx, std::string& err_string, const CAmount& highfee) override {
+        return BroadcastTransaction(tx, hashTx, err_string, highfee);
     }
 };
 } // namespace

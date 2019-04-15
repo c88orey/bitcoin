@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string>
+#include <util/error.h>
 #include <vector>
 
 class CBlock;
@@ -267,6 +268,9 @@ public:
     //! to be prepared to handle this by ignoring notifications about unknown
     //! removed transactions and already added new transactions.
     virtual void requestMempoolTransactions(Notifications& notifications) = 0;
+
+    //! Broadcast a transaction
+    virtual TransactionError broadcastTransaction(const CTransactionRef tx, uint256& hashTx, std::string& err_string, const CAmount& highfee) = 0;
 };
 
 //! Interface to let node manage chain clients (wallets, or maybe tools for
