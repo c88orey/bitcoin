@@ -36,6 +36,7 @@ void DummyWalletInit::AddWalletOptions() const
         "-paytxfee=<amt>",
         "-rescan",
         "-salvagewallet",
+        "-signer=<cmd>",
         "-spendzeroconfchange",
         "-txconfirmtarget=<n>",
         "-upgradewallet",
